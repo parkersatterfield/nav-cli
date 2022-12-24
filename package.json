@@ -1,0 +1,30 @@
+{
+  "name": "nav-cli",
+  "version": "1.0.0",
+  "description": "Better CLI navigation",
+  "main": "bin/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "nav"
+  ],
+  "bin": {
+    "nav": "./bin/index.js"
+  },
+  "author": "Parker Satterfield",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "clipboardy": "^3.0.0",
+    "file-system": "^2.2.2",
+    "inquirer": "^9.1.4",
+    "yargs": "^17.6.2"
+  },
+  "files": [
+    "bin/",
+    "src/"
+  ]
+}
