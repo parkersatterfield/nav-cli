@@ -71,7 +71,7 @@ const nav = async () => {
     inquirer.prompt({
         name: 'navTo',
         type: 'list',
-        message: 'Navigate to: \n',
+        message: `${process.cwd()} \n`,
         choices: [
             STAY_MESSAGE,
             GO_BACK_MESSAGE,
