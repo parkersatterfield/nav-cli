@@ -2,7 +2,7 @@
 NodeJS CLI App to help users navigate file systems from the command line. 
 
 ## Demo
-
+![demo gif](./public/demo.gif)
 
 ## Installation
 ```
@@ -25,5 +25,7 @@ After global installation via npm, run the `nav` command from your shell of choi
 ## Future Work
 - Add arguments for --help and --version.
 - Better UX option for `Stay Here` feature to replace. 
+- Hot key integration for searching files/directories by starting letter to enhance navigation and reduce up/down arrow clicks.
 - More programs to open files with, or perhaps allow users to select which program to open with. 
+- Clean up console after opening file.
 - Open to feature suggestions.

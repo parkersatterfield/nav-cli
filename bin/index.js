@@ -45,14 +45,13 @@ const handleAnswer = async (answer) => {
 }
 
 const open = (file) => {
-    console.clear();
-
     // try open with VS Code
     try {
         exec(`${file} code .`);
     } catch (error) {
         console.error(error);
     }
+    console.clear();
 }
 
 const nav = async () => {
