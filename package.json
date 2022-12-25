@@ -7,11 +7,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "cli",
     "nav"
   ],
   "bin": {
+    "@parkersatterfield/nav": "./bin/index.js",
     "nav": "./bin/index.js"
   },
   "author": "Parker Satterfield",

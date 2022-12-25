@@ -1,5 +1,8 @@
-# Better CLI Navigation
-NodeJS CLI App to help users navigate file systems from the command line. 
+# nav-cli
+Nav-cli is a Node.js CLI App to help Node developers navigate file systems from the command line better by providing a basic interface and combining `cd`, `ls`, and `code .` commands into one. 
+
+- NPM: https://www.npmjs.com/package/nav-cli
+- GitHub: https://github.com/parkersatterfield/nav-cli 
 
 ## Demo
 ![demo gif](./public/demo.gif)
@@ -23,8 +26,8 @@ After global installation via npm, run the `nav` command from your shell of choi
 - `📄 [file name]`: Select file to open with VS code. 
 
 ## Future Work
-- Add arguments for --help and --version.
-- Better UX option for `Stay Here` feature to replace. 
+- Add flag handling for --help and --version.
+- Better UX option for `Stay Here` feature to replace copy to clipboard. 
 - Hot key integration for searching files/directories by starting letter to enhance navigation and reduce up/down arrow clicks.
 - More programs to open files with, or perhaps allow users to select which program to open with. 
 - Clean up console after opening file.
