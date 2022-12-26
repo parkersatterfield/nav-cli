@@ -1,10 +1,12 @@
-# nav-cli
+# nav-cli  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Nav-cli is a Node.js CLI App to help Node developers navigate file systems from the command line better by providing a basic interface and combining `cd`, `ls`, and `code .` commands into one. 
 
 - NPM: https://www.npmjs.com/package/nav-cli
 - GitHub: https://github.com/parkersatterfield/nav-cli 
 
 ## Demo
+![demo screenshot 1](https://github.com/parkersatterfield/nav-cli/blob/main/public/public.png?raw=true)
 ![demo gif](https://github.com/parkersatterfield/nav-cli/blob/main/public/demo.gif?raw=true)
 
 ## Installation
