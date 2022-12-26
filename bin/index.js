@@ -7,6 +7,16 @@ import { exec, execSync, spawn, spawnSync } from "child_process";
 import { chdir, execArgv } from "process";
 import clipboard from "clipboardy";
 import chalk from "chalk";
+import yargs from "yargs";
+
+// yargs config
+yargs((process.argv.slice(2)))
+  .usage('nav-cli is a command line tool to help developers navigate file systems from the command line better.'
+    + '\n \n Use arrow keys to navigate directories or open files in VS Code')
+  .command('nav', "Run to bring up navigation interface in your terminal.")
+  .help('help')
+  .argv
+;
 
 const STAY_MESSAGE = "✅ Stay Here";
 const GO_BACK_MESSAGE = "🔙 Go Back";
@@ -20,6 +30,7 @@ const cd = () => {
     process.exit(0);
 }
 
+// handle inquirer helper -> nav and open logic
 const handleAnswer = async (answer) => {
     console.clear();
     const location = answer.navTo;
@@ -44,6 +55,7 @@ const handleAnswer = async (answer) => {
     }
 }
 
+// open file helper
 const open = (file) => {
     // try open with VS Code
     try {
@@ -54,6 +66,7 @@ const open = (file) => {
     console.clear();
 }
 
+// main function
 const nav = async () => {
     const items = fs.readdirSync(process.cwd(), {withFileTypes:true});
     
@@ -83,4 +96,5 @@ const nav = async () => {
     });
 }
 
+// initialize program 
 nav();
