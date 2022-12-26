@@ -6,7 +6,7 @@ Nav-cli is a Node.js CLI App to help Node developers navigate file systems from 
 - GitHub: https://github.com/parkersatterfield/nav-cli 
 
 ## Demo
-![demo screenshot 1](https://github.com/parkersatterfield/nav-cli/blob/main/public/public.png?raw=true)
+![demo screenshot 1](https://github.com/parkersatterfield/nav-cli/blob/main/public/screenshot1.png?raw=true)
 ![demo gif](https://github.com/parkersatterfield/nav-cli/blob/main/public/demo.gif?raw=true)
 
 ## Installation
