@@ -83,7 +83,7 @@ const nav = async () => {
     inquirer.prompt({
         name: 'navTo',
         type: 'list',
-        message: `${process.cwd()} \n`,
+        message: `${chalk.bgGreen(process.cwd())} \n`,
         choices: [
             STAY_MESSAGE,
             GO_BACK_MESSAGE,
