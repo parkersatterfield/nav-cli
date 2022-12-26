@@ -4,6 +4,7 @@ Nav-cli is a Node.js CLI App to help Node developers navigate file systems from 
 
 - NPM: https://www.npmjs.com/package/nav-cli
 - GitHub: https://github.com/parkersatterfield/nav-cli 
+- Product Hunt: https://www.producthunt.com/posts/nav-cli 
 
 ## Demo
 ![demo screenshot 1](https://github.com/parkersatterfield/nav-cli/blob/main/public/screenshot1.png?raw=true)
@@ -29,7 +30,7 @@ After global installation via npm, run the `nav` command from your shell of choi
 
 
 ## Feature Requests & Bug Fixes
-Please feel free to reach out on my website to report bugs adn request features. 
+Please feel free to reach out on my website to report bugs and request features. 
 
 https://www.parkersatterfield.com/contact
 
@@ -38,3 +39,5 @@ https://www.parkersatterfield.com/contact
 - Hot key integration for searching files/directories by starting letter to enhance navigation and reduce up/down arrow clicks.
 - More programs to open files with, or perhaps allow users to select which program to open with. 
 - Clean up console after opening file.
+
+![product hunt link](https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=372606&theme=light)
