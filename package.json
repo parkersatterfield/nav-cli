@@ -1,6 +1,6 @@
 {
   "name": "nav-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Better CLI navigation",
   "main": "bin/index.js",
   "type": "module",

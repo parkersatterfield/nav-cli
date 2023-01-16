@@ -25,6 +25,7 @@ Note: this app should work across all Operating Systems.
 After global installation via npm, run the `nav` command from your shell of choice. You will be prompted with a list of navigation options from your current directory. Use the up and down arrow keys to:
 - `✅ Stay Here`: cd [directory to navigate to] command copied to clipboard. Paste into shell to navigate to directory selected from previous run of the app. Note: this is a temporary solution hopefully. A better UX would be to automatically run a cd command in the current working shell, but this runs into some permissions and threading issues. 
 - `🔙 Go Back`: navigate to the directory above the current working directory and continue navigating with the CLI app. 
+- `↗️ Open in VS Code`: Open directory in VS Code
 -  `📁 [dir name]`: Select a directory to navigate into it and continue navigating with the CLI. 
 - `📄 [file name]`: Select file to open with VS code. 
 
