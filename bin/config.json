@@ -1,0 +1,13 @@
+{
+    "editor": "VS Code",
+    "editorOptions": {
+        "VS Code": {
+            "name": "VS Code",
+            "openCommand": "code"
+        },
+        "IntelliJ": {
+            "name": "IntelliJ",
+            "openCommand": "idea"
+        }
+    }
+}
