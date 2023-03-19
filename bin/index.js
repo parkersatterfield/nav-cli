@@ -85,9 +85,21 @@ const nav = async () => {
     items.forEach(i => {
         if (i.isDirectory() && !i.name.startsWith(".")) {
             newItems.push("📁 " + i.name);
-        } else if (i.isFile() && i.isNotJunk) {
+        } 
+        if (i.isFile()) {
             newItems.push("📄 " + i.name);
         }
+    });
+
+    // sort directories first
+    newItems.sort(x => {
+        if (x.includes("📁")) {
+            return -1;
+        } 
+        if (x.includes("📄")) {
+            return 1;
+        }
+        return 0;
     });
 
     inquirer.prompt({
@@ -98,7 +110,8 @@ const nav = async () => {
             STAY_MESSAGE,
             GO_BACK_MESSAGE,
             OPEN_MESSAGE,
-            ...newItems
+            ...newItems,
+            "------------"
         ]
     }).then((answer) => 
         handleAnswer(answer))
@@ -112,7 +125,7 @@ const changeEditor = () => {
     inquirer.prompt({
         name: 'editor',
         type: 'list',
-        message:"Select your default editor",
+        message:`Select your default editor \n Current: ${config.editor}`,
         choices: [
             "VS Code",
             "IntelliJ"
