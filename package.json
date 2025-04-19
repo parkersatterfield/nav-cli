@@ -22,11 +22,11 @@
   "dependencies": {
     "chalk": "^5.2.0",
     "clipboardy": "^3.0.0",
-    "configstore": "^6.0.0",
-    "dotenv": "^16.0.3",
     "file-system": "^1.2.2",
     "inquirer": "^9.1.4",
-    "junk": "^4.0.0",
+    "inquirer-autocomplete-prompt": "^3.0.1",
+    "readline": "^1.3.0",
+    "which": "^5.0.0",
     "yargs": "^17.6.2"
   },
   "files": [
