@@ -18,11 +18,14 @@ export const nav = async () => {
         .sort((a) => (a.startsWith(DIR_SYMBOL) ? -1 : 1));
 
     const prompt = async () => {
+        console.clear();
+
         const { navTo } = await inquirer.prompt({
             name: "navTo",
             type: "autocomplete",
             loop: false,
-            message: `${chalk.blue(process.cwd())} \nType to filter files/directories: \n`,
+            message: `${chalk.blue.underline(process.cwd())} \n Search:`,
+            prefix: "📂",
             source: (_, input) => {
                 input = input || "";
                 return Promise.resolve(
@@ -43,7 +46,6 @@ export const nav = async () => {
 
     prompt();
 };
-
 
 export const selectEditor = async (path) => {
     const VS_CODE_ANSWER = "🆚 VS Code";
@@ -69,7 +71,7 @@ export const selectEditor = async (path) => {
             } else if (answer.editor === NOTEPAD_ANSWER) {
                 handleNotepadOpen(path);
             }
-            console.clear()
+            console.clear();
         })
         .catch((error) => console.error(chalk.red(`Error: ${error.message}`)));
-}
+};
