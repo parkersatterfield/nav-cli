@@ -25,7 +25,7 @@ const openInEditor = async (filePath, command, editorName) => {
             if (error) console.error(chalk.red(`Error opening in ${editorName}: ${error.message}`));
         });
     } catch (error) {
-        console.error(chalk.red(`Unexpected error: ${error.message}`));
+        console.error(chalk.red(`Is ${editorName} installed? Unexpected error: ${error.message}`));
     }
 };
 
