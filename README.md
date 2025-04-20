@@ -1,44 +1,70 @@
-# nav-cli  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# nav-cli  🚀 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Nav-cli is a Node.js CLI App to help Node developers navigate file systems from the command line better by providing a basic interface and combining `cd`, `ls`, and `code .` commands into one. 
+`Nav` is an open-source Node.js CLI tool designed to improve productivity and developer experience by simplifying file system navigation. `Nav` improves on the standard command line navigation by simplifying it into a seamless, interactive experience. As a developer myself, this tool has become a critical part of my workflow.
 
-- NPM: https://www.npmjs.com/package/nav-cli
-- GitHub: https://github.com/parkersatterfield/nav-cli 
-- Product Hunt: https://www.producthunt.com/posts/nav-cli 
+- **NPM**: [nav-cli](https://www.npmjs.com/package/nav-cli)  
+- **GitHub**: [nav-cli](https://github.com/parkersatterfield/nav-cli)  
+- **Product Hunt**: [nav-cli](https://www.producthunt.com/posts/nav-cli)  
 
-## Demo
-![demo screenshot 1](https://github.com/parkersatterfield/nav-cli/blob/main/public/screenshot1.png?raw=true)
-![demo gif](https://github.com/parkersatterfield/nav-cli/blob/main/public/demo.gif?raw=true)
 
-## Installation
-```
+## ✨ Features
+- **Interactive Navigation**: Use arrow keys to browse directories and files. Type to filter in the current working directory for easy fuzzy finding. 
+- **Quick Editor Access**: Open files or directories directly in your favorite editor (VS Code, IntelliJ, or Notepad).
+- **Clipboard Integration**: Automatically generate and copy `cd` commands for seamless navigation across sessions.
+- **Search Functionality**: Filter files and directories in real-time as you type.
+- **Cross-Platform**: Works on Windows, macOS, and Linux. 
+- **Easy Install, No Setup**: One command download and works out of the box.
+
+
+## 🎥 Demo (V1)
+![Demo Screenshot](https://github.com/parkersatterfield/nav-cli/blob/main/public/screenshot1.png?raw=true)  
+![Demo GIF](https://github.com/parkersatterfield/nav-cli/blob/main/public/demo.gif?raw=true)
+
+
+## 📦 Installation
+```bash
 npm i -g nav-cli
 ```
 
-## Requirements
-- Node.js
-- VS Code or IntelliJ (for open in editor features) 
 
-Note: this app should work across all Operating Systems. 
-
-## Usage
-After global installation via npm, run the `nav` command from your shell of choice. You will be prompted with a list of navigation options from your current directory. Use the up and down arrow keys to:
-- `✅ Stay Here`: cd [directory to navigate to] command copied to clipboard. Paste into shell to navigate to directory selected from previous run of the app. Note: this is a temporary solution hopefully. A better UX would be to automatically run a cd command in the current working shell, but this runs into some permissions and threading issues. 
-- `🔙 Go Back`: navigate to the directory above the current working directory and continue navigating with the CLI app. 
-- `↗️ Open in {editor}`: Open directory in VS Code or IntelliJ
-- `📁 [dir name]`: Select a directory to navigate into it and continue navigating with the CLI. 
-- `📄 [file name]`: Select file to open in editor. 
+## 🛠️ Requirements
+- **Node.js** (latest LTS recommended)  
+- **Editor Support**: VS Code, IntelliJ, or Notepad for file opening features.
 
 
-## Feature Requests & Bug Fixes
-Please feel free to reach out on my website to report bugs and request features. 
+## 🚀 Usage
+After installing globally via npm, simply run the `nav` command in your terminal. Here's what you can do:
 
-https://www.parkersatterfield.com/contact
+- **✅ Stay Here**: Copies the `cd` command for the current directory to your clipboard.
+- **🔙 Go Back**: Navigate to the parent directory and continue exploring.  
+- **↗️ Open in Editor**: Open the current directory or a selected file in your preferred editor.
+- **📁 Directory Navigation**: Select a directory to navigate into it. Type to filter down to what you're searching for.
+- **📄 File Opening**: Select a file to open it in your editor. 
 
-## Future Work
-- Better UX option for `Stay Here` feature to replace copy to clipboard. 
-- Hot key integration for searching files/directories by starting letter to enhance navigation and reduce up/down arrow clicks.
-- More programs to open files with, or perhaps allow users to select which program to open with. 
-- Clean up console after opening file.
+### Hotkeys
+- **Left Arrow**: Go back to the parent directory.  
+- **Escape / Q**: Exit the application.  
 
-![product hunt link](https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=372606&theme=light)
+
+## 🐛 Feature Requests & Bug Reports
+We welcome contributions and feedback!  
+- Submit issues or feature requests on [GitHub](https://github.com/parkersatterfield/nav-cli/issues).  
+- Reach out via [Parker Satterfield's website](https://www.parkersatterfield.com/contact).  
+
+
+## 🔮 Future Plans
+- **Enhanced UX**: Replace clipboard-based navigation with direct shell integration.
+- **Custom Editor Support**: Allow users to configure their preferred editors.
+- **Advanced Hotkeys**: Add shortcuts for faster navigation and file selection.
+
+
+## 🤝 Contributing
+Contributions are welcome!
+
+
+## 📜 License
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).  
+
+---
+
+![Product Hunt Badge](https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=372606&theme=light)
