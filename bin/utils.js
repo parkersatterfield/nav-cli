@@ -25,7 +25,7 @@ const openInEditor = async (filePath, command, editorName) => {
             if (error) console.error(chalk.red(`Error opening in ${editorName}: ${error.message}`));
         });
     } catch (error) {
-        console.error(chalk.red(`Unexpected error: ${error.message}`));
+        console.error(chalk.red(`Is ${editorName} installed? Unexpected error: ${error.message}`));
     }
 };
 
@@ -71,9 +71,9 @@ export const handleAnswer = async (answer) => {
             navigateToDirectory(dirPath);
         } else if (navTarget.startsWith(FILE_SYMBOL)) {
             const filePath = extractPath(navTarget, FILE_SYMBOL);
-            await selectEditor(filePath);
+            await selectEditor(true, filePath);
         } else if (navTarget === OPEN_MESSAGE) {
-            await selectEditor(null);
+            await selectEditor(false, null);
         } else {
             console.error(chalk.red("Invalid navigation target."));
         }

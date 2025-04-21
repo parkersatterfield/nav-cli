@@ -46,18 +46,23 @@ export const nav = async () => {
 
     prompt();
 };
-
-export const selectEditor = async (path) => {
+``
+export const selectEditor = async (isFile, path) => {
     const VS_CODE_ANSWER = "🆚 VS Code";
     const INTELI_J_ANSWER = "☕ InteliJ";
     const NOTEPAD_ANSWER = "🗒️ Notepad";
+
+    const choices = [VS_CODE_ANSWER, INTELI_J_ANSWER];
+    if (isFile) {
+        choices.push(NOTEPAD_ANSWER);
+    }
 
     inquirer
         .prompt({
             name: "editor",
             type: "list",
             message: "Select your editor:",
-            choices: [VS_CODE_ANSWER, INTELI_J_ANSWER, NOTEPAD_ANSWER],
+            choices,
         })
         .then((answer) => {
             if (!path) {
