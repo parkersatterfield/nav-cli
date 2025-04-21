@@ -1,5 +1,6 @@
 import readline from "readline";
 import { nav } from "./navigation.js";
+import { handleInteliJOpen, handleVSCodeOpen } from "./utils.js";
 
 let rl;
 
@@ -24,7 +25,13 @@ export const setupHotkeys = () => {
             return nav();
         }
 
-        if (key.name === "escape" || key.name === "q") {
+        if (key.ctrl && key.name === "o") {
+            handleVSCodeOpen(process.cwd());
+            console.clear();
+            rl.close();
+        }
+
+        if (key.name === "escape") {
             console.clear();
             rl.close();
             rl = null;
