@@ -9,7 +9,7 @@
 
 ## ✨ Features
 - **Interactive Navigation**: Use arrow keys to browse directories and files. Type to filter in the current working directory for easy fuzzy finding. 
-- **Quick Editor Access**: Open files or directories directly in your favorite editor (VS Code, IntelliJ, or Notepad).
+- **Quick Editor Access**: Open files in your favorite editor with an explicit picker (VS Code, IntelliJ, or Notepad).
 - **Clipboard Integration**: Automatically generate and copy `cd` commands for seamless navigation across sessions.
 - **Search Functionality**: Filter files and directories in real-time as you type.
 - **Cross-Platform**: Works on Windows, macOS, and Linux in any shell (hopefully!).
@@ -35,15 +35,16 @@ npm i -g nav-cli
 ## 🚀 Usage
 After installing globally via npm, simply run the `nav` command in your terminal. Here's what you can do:
 
-- **✅ Stay Here**: Copies the `cd` command for the current directory to your clipboard.
-- **🔙 Go Back**: Navigate to the parent directory and continue exploring.
-- **↗️ Open in Editor**: Open the current directory or a selected file in your preferred editor.
-- **📁 Directory Navigation**: Select a directory to navigate into it. Type to filter down to what you're searching for.
-- **📄 File Opening**: Select a file to open it in your editor. 
+- **Stay Here**: Copy the `cd` command for the current directory to your clipboard with `Ctrl + Y`.
+- **Back Directory**: Use the left arrow to move to the previous directory.
+- **Directory Navigation**: Press `Enter` on a directory to browse into it.
+- **File Opening**: Press `Enter` on a file and choose which editor to open it with.
+- **Search**: Type at any time to filter the current folder.
 
 ### Hotkeys
-- **Ctrl + o**: Open cwd in VS Code.
-- **Left Arrow**: Go back to the parent directory.
+- **Ctrl + y**: Stay here and copy the current directory as a `cd` command.
+- **Left Arrow**: Go back to the previous directory.
+- **Enter**: Browse into a directory or open a file with an editor picker.
 - **Escape**: Exit the application.
 
 

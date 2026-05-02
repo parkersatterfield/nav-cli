@@ -7,7 +7,7 @@ const args = process.argv.slice(2);
 
 if (args.includes('--help') || args.includes('-h')) {
   console.log(
-    'Usage: nav\n\nNavigate your filesystem interactively.\n\nEnv vars:\n  NAV_EDITOR=<command>  Skip editor picker (e.g. NAV_EDITOR=code)'
+    'Usage: nav\n\nNavigate your filesystem interactively.'
   );
   process.exit(0);
 }
