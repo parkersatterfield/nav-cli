@@ -1,5 +1,4 @@
 import { exec } from "child_process";
-import chalk from "chalk";
 import { nav, selectEditor } from "./navigation.js";
 import clipboard from "clipboardy";
 import path from "path";
@@ -11,9 +10,9 @@ const cd = () => {
     const newDir = process.cwd();
     try {
         clipboard.writeSync(`cd "${newDir}"`);
-        console.log(chalk.blue(`📋 cd command copied to clipboard.`));
+        console.log(`📋 cd command copied to clipboard.`);
     } catch (error) {
-        console.error(chalk.red(`Failed to copy to clipboard: ${error.message}`));
+        console.error(`Failed to copy to clipboard: ${error.message}`);
     }
     process.exit(0);
 };
@@ -22,10 +21,10 @@ const openInEditor = async (filePath, command, editorName) => {
     try {
         await which(command);
         exec(`${command} ${filePath}`, (error) => {
-            if (error) console.error(chalk.red(`Error opening in ${editorName}: ${error.message}`));
+            if (error) console.error(`Error opening in ${editorName}: ${error.message}`);
         });
     } catch (error) {
-        console.error(chalk.red(`Is ${editorName} installed? Unexpected error: ${error.message}`));
+        console.error(`Is ${editorName} installed? Unexpected error: ${error.message}`);
     }
 };
 
@@ -41,12 +40,16 @@ export const handleNotepadOpen = (path) => {
     openInEditor(path, "notepad", "Notepad");
 };
 
+export const handleCustomEditorOpen = (path, command) => {
+    openInEditor(path, command, command);
+};
+
 const navigateToDirectory = (dir) => {
     try {
         process.chdir(path.join(process.cwd(), dir));
         nav();
     } catch (error) {
-        console.error(chalk.red(`Failed to navigate to directory: ${error.message}`));
+        console.error(`Failed to navigate to directory: ${error.message}`);
     }
 };
 
@@ -75,9 +78,9 @@ export const handleAnswer = async (answer) => {
         } else if (navTarget === OPEN_MESSAGE) {
             await selectEditor(false, null);
         } else {
-            console.error(chalk.red("Invalid navigation target."));
+            console.error("Invalid navigation target.");
         }
     } catch (error) {
-        console.error(chalk.red(`Error handling answer: ${error.message}`));
+        console.error(`Error handling answer: ${error.message}`);
     }
 };
