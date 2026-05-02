@@ -18,7 +18,7 @@
     "nav": "./bin/index.js"
   },
   "author": "Parker Satterfield",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "clipboardy": "^3.0.0",
     "which": "^5.0.0"

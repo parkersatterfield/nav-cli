@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import readline from "readline";
-import { handleAnswer, handleVSCodeOpen, handleInteliJOpen, handleNotepadOpen } from "./utils.js";
+import { handleAnswer, handleVSCodeOpen, handleInteliJOpen, handleNotepadOpen, handleCustomEditorOpen } from "./utils.js";
 import { DIR_SYMBOL, FILE_SYMBOL, STAY_MESSAGE, GO_BACK_MESSAGE, OPEN_MESSAGE } from "./constants.js";
 import { setupHotkeys } from "./hotkeys.js";
 
@@ -192,6 +192,16 @@ export const nav = async () => {
 };
 
 export const selectEditor = async (isFile, filePath) => {
+    const openPath = filePath || process.cwd();
+
+    // Set NAV_EDITOR to any editor command (e.g. "code", "vim", "subl") to skip the
+    // interactive prompt and open directly in that editor every time.
+    const navEditor = process.env.NAV_EDITOR;
+    if (navEditor) {
+        handleCustomEditorOpen(openPath, navEditor);
+        return;
+    }
+
     const VS_CODE_ANSWER = "🆚 VS Code";
     const INTELI_J_ANSWER = "☕ InteliJ";
     const NOTEPAD_ANSWER = "🗒️ Notepad";
@@ -203,8 +213,6 @@ export const selectEditor = async (isFile, filePath) => {
 
     const answer = await runListPrompt("Select your editor:", choices);
     if (!answer) return;
-
-    const openPath = filePath || process.cwd();
 
     if (answer === VS_CODE_ANSWER) {
         handleVSCodeOpen(openPath);

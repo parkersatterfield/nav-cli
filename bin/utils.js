@@ -40,6 +40,10 @@ export const handleNotepadOpen = (path) => {
     openInEditor(path, "notepad", "Notepad");
 };
 
+export const handleCustomEditorOpen = (path, command) => {
+    openInEditor(path, command, command);
+};
+
 const navigateToDirectory = (dir) => {
     try {
         process.chdir(path.join(process.cwd(), dir));
