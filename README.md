@@ -1,6 +1,6 @@
-# nav-cli [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# nav-cli
 
-`nav-cli` is a keyboard-first filesystem navigator for developers. It gives you a clean terminal UI for browsing directories, opening files with an editor picker, and copying your current working directory when you want to stay put.
+`nav-cli` is a keyboard-first filesystem navigator for developers. Nav greatly improves the experience of navigating filesystems. It gives you a clean terminal UI for browsing directories, opening files, and copying your current working directory when you want to stay put. 
 
 - **NPM**: [nav-cli](https://www.npmjs.com/package/nav-cli)
 - **GitHub**: [nav-cli](https://github.com/parkersatterfield/nav-cli)
@@ -9,13 +9,13 @@
 ![nav-cli interface preview](./public/nav-cli-demo.png)
 
 ## ✨ Features
-- **Clean terminal UI**: Slash-prefixed directories, plain files, and lightweight keyboard hints.
+- **Cross-platform**: Works on Windows, macOS, and Linux in any shell.
 - **Fast directory browsing**: Use arrow keys to move and `Enter` to browse deeper.
-- **Explicit editor picker**: Open files in VS Code, IntelliJ, or Notepad without hidden defaults.
+- **Editor picker**: Open files in VS Code, IntelliJ, or Notepad without hidden defaults.
 - **Open current directory**: Press `Ctrl + O` to open the current folder in a supported editor.
 - **Stay here flow**: Press `Ctrl + Y` to copy a ready-to-run `cd` command for the current directory.
 - **Instant filtering**: Type at any time to narrow the current folder.
-- **Cross-platform**: Works on Windows, macOS, and Linux in any shell.
+- **Clean terminal UI**: Slash-prefixed directories, plain files, and lightweight keyboard hints.
 
 ## 📦 Installation
 ```bash
@@ -52,32 +52,5 @@ From there you can:
 - **Arrow Keys**: Move through the list.
 - **Escape**: Exit the application.
 
-## Why It Feels Fast
-- **No mode switching**: browsing, filtering, and opening all happen in one screen.
-- **Low-noise visuals**: directories are distinguished by `/`, not heavy color or icons.
-- **Predictable actions**: `Enter` acts on the selected item, `Ctrl + O` opens the current folder, and `Ctrl + Y` always means stay here.
-
-
-## 🐛 Feature Requests & Bug Reports
-We welcome contributions and feedback!
-- Submit issues or feature requests on [GitHub](https://github.com/parkersatterfield/nav-cli/issues).
-- Reach out via [Parker Satterfield's website](https://www.parkersatterfield.com/contact).
-
-
-## 🔮 Future Plans
-- **Enhanced UX**: Replace clipboard-based navigation with direct shell integration.
-- **Custom Editor Support**: Expand editor options beyond the built-in picker.
-- **Favorites**: Allow users to add favorite directories as starting points to navigating.
-- **More Hotkeys**: Add shortcuts for faster navigation and file selection.
-
-
-## 🤝 Contributing
-Contributions are welcome!
-
-
-## 📜 License
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
-
----
 
 ![Product Hunt Badge](https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=372606&theme=light)
