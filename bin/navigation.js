@@ -6,6 +6,7 @@ import { DIRECTORY_PREFIX } from './constants.js';
 
 const ACTION_GO_PARENT = 'go-parent';
 const ACTION_COPY_HERE = 'copy-here';
+const ACTION_OPEN_CWD = 'open-cwd';
 const ACTION_SELECT = 'select';
 
 const renderTUI = (dirPath, items, tui) => {
@@ -35,7 +36,7 @@ const renderTUI = (dirPath, items, tui) => {
       totalCount: items.length,
       filteredCount: filtered.length,
       filterText: tui.filterText,
-      headerHint: 'ctrl+y stay here',
+      headerHint: 'ctrl+o open cwd | ctrl+y stay here',
     });
     tui.renderList(filtered, selectedIdx);
     tui.renderFooter({
@@ -85,6 +86,12 @@ const renderTUI = (dirPath, items, tui) => {
       if (key.ctrl && key.name === 'y') {
         cleanup();
         resolve({ action: ACTION_COPY_HERE });
+        return;
+      }
+
+      if (key.ctrl && key.name === 'o') {
+        cleanup();
+        resolve({ action: ACTION_OPEN_CWD });
         return;
       }
 
@@ -243,6 +250,11 @@ export const nav = async (dir, tui) => {
     return copyCurrentDirectory(dir, tui);
   }
 
+  if (result.action === ACTION_OPEN_CWD) {
+    await selectEditor(false, dir, tui);
+    return nav(dir, tui);
+  }
+
   if (result.action === ACTION_SELECT && result.item) {
     if (result.item.kind === 'directory') {
       return nav(result.item.path, tui);
@@ -271,7 +283,6 @@ export const selectEditor = async (isFile, filePath, tui) => {
   const didOpen = await openEditor(selectedEditor, filePath);
   if (didOpen) {
     tui.exit();
-    console.log(`Opened in ${selectedEditor.label}.`);
     process.exit(0);
   }
 };

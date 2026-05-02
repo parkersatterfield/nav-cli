@@ -56,10 +56,12 @@ export const openEditor = async (editor, filePath) => {
       ? spawn(process.env.ComSpec || 'cmd.exe', ['/c', editor.resolvedCommand, filePath], {
           detached: true,
           stdio: 'ignore',
+          windowsHide: true,
         })
       : spawn(editor.resolvedCommand, [filePath], {
           detached: true,
           stdio: 'ignore',
+          windowsHide: true,
         });
 
     return await new Promise((resolve) => {

@@ -12,6 +12,7 @@
 - **Clean terminal UI**: Slash-prefixed directories, plain files, and lightweight keyboard hints.
 - **Fast directory browsing**: Use arrow keys to move and `Enter` to browse deeper.
 - **Explicit editor picker**: Open files in VS Code, IntelliJ, or Notepad without hidden defaults.
+- **Open current directory**: Press `Ctrl + O` to open the current folder in a supported editor.
 - **Stay here flow**: Press `Ctrl + Y` to copy a ready-to-run `cd` command for the current directory.
 - **Instant filtering**: Type at any time to narrow the current folder.
 - **Cross-platform**: Works on Windows, macOS, and Linux in any shell.
@@ -36,6 +37,7 @@ nav
 
 From there you can:
 
+- **Open Current Directory**: Press `Ctrl + O` to open the current folder in your editor of choice.
 - **Stay Here**: Copy a ready-to-run `cd` command for the current directory with `Ctrl + Y`.
 - **Back Directory**: Use the left arrow to move to the previous directory.
 - **Directory Navigation**: Press `Enter` on a directory to browse into it.
@@ -43,6 +45,7 @@ From there you can:
 - **Search**: Type at any time to filter the current folder.
 
 ### Hotkeys
+- **Ctrl + o**: Open the current directory in a supported editor.
 - **Ctrl + y**: Stay here and copy a `cd` command for the current directory.
 - **Left Arrow**: Go back to the previous directory.
 - **Enter**: Browse into a directory or open a file with an editor picker.
@@ -52,7 +55,7 @@ From there you can:
 ## Why It Feels Fast
 - **No mode switching**: browsing, filtering, and opening all happen in one screen.
 - **Low-noise visuals**: directories are distinguished by `/`, not heavy color or icons.
-- **Predictable actions**: `Enter` acts on the selected item, `Ctrl + Y` always means stay here.
+- **Predictable actions**: `Enter` acts on the selected item, `Ctrl + O` opens the current folder, and `Ctrl + Y` always means stay here.
 
 
 ## 🐛 Feature Requests & Bug Reports
