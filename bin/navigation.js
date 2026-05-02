@@ -1,19 +1,22 @@
 import fs from 'fs/promises';
 import path from 'path';
 import readline from 'readline';
-import { handleAnswer, handleVSCodeOpen, handleInteliJOpen, handleNotepadOpen, handleCustomEditorOpen } from './utils.js';
-import { DIR_SYMBOL, FILE_SYMBOL, STAY_MESSAGE, GO_BACK_MESSAGE, OPEN_MESSAGE } from './constants.js';
+import { copyCurrentDirectory, getAvailableEditors, openEditor } from './utils.js';
+import { DIRECTORY_PREFIX } from './constants.js';
 
-const LEFT = '@@LEFT';
-const VSCODE_OPEN = '@@VSCODE';
+const ACTION_GO_PARENT = 'go-parent';
+const ACTION_COPY_HERE = 'copy-here';
+const ACTION_OPEN_CWD = 'open-cwd';
+const ACTION_SELECT = 'select';
 
 const renderTUI = (dirPath, items, tui) => {
-  const allItems = [STAY_MESSAGE, GO_BACK_MESSAGE, OPEN_MESSAGE, ...items];
   let selectedIdx = 0;
 
   const getFiltered = () => {
-    if (!tui.filterText) return allItems;
-    return items.filter(item => item.toLowerCase().includes(tui.filterText.toLowerCase()));
+    if (!tui.filterText) return items;
+
+    const needle = tui.filterText.toLowerCase();
+    return items.filter(item => item.name.toLowerCase().includes(needle));
   };
 
   const redraw = () => {
@@ -21,10 +24,27 @@ const renderTUI = (dirPath, items, tui) => {
     if (filtered.length > 0 && selectedIdx >= filtered.length) {
       selectedIdx = filtered.length - 1;
     }
+
+    if (filtered.length === 0) {
+      selectedIdx = 0;
+    }
+
+    const activeItem = filtered[selectedIdx] ?? null;
+
     tui.clearScreen();
-    tui.renderHeader(dirPath);
+    tui.renderHeader(dirPath, {
+      totalCount: items.length,
+      filteredCount: filtered.length,
+      filterText: tui.filterText,
+      headerHint: 'ctrl+o open cwd | ctrl+y stay here',
+    });
     tui.renderList(filtered, selectedIdx);
-    tui.renderFilterInput(tui.filterText);
+    tui.renderFooter({
+      filterText: tui.filterText,
+      helpText: activeItem
+        ? '↑↓ move | type filter | esc quit'
+        : 'type filter | ← back / | esc quit',
+    });
   };
 
   return new Promise((resolve) => {
@@ -49,6 +69,7 @@ const renderTUI = (dirPath, items, tui) => {
 
     const onKey = (str, key) => {
       if (!key) return;
+      const filtered = getFiltered();
 
       if ((key.ctrl && key.name === 'c') || key.name === 'escape') {
         cleanup();
@@ -58,17 +79,21 @@ const renderTUI = (dirPath, items, tui) => {
 
       if (key.name === 'left') {
         cleanup();
-        resolve(LEFT);
+        resolve({ action: ACTION_GO_PARENT });
+        return;
+      }
+
+      if (key.ctrl && key.name === 'y') {
+        cleanup();
+        resolve({ action: ACTION_COPY_HERE });
         return;
       }
 
       if (key.ctrl && key.name === 'o') {
         cleanup();
-        resolve(VSCODE_OPEN);
+        resolve({ action: ACTION_OPEN_CWD });
         return;
       }
-
-      const filtered = getFiltered();
 
       if (key.name === 'up') {
         selectedIdx = Math.max(0, selectedIdx - 1);
@@ -77,7 +102,9 @@ const renderTUI = (dirPath, items, tui) => {
       }
 
       if (key.name === 'down') {
-        selectedIdx = Math.min(filtered.length - 1, selectedIdx + 1);
+        selectedIdx = filtered.length === 0
+          ? 0
+          : Math.min(filtered.length - 1, selectedIdx + 1);
         redraw();
         return;
       }
@@ -85,7 +112,10 @@ const renderTUI = (dirPath, items, tui) => {
       if (key.name === 'return') {
         if (filtered.length > 0) {
           cleanup();
-          resolve(filtered[selectedIdx]);
+          resolve({
+            action: ACTION_SELECT,
+            item: filtered[selectedIdx],
+          });
         }
         return;
       }
@@ -119,6 +149,12 @@ const renderListPrompt = (message, choices, tui) => {
     tui.clearScreen();
     tui.renderHeader(message);
     tui.renderList(choices, selectedIdx);
+    tui.renderFooter({
+      filterText: '',
+      helpText: '↑↓ move | enter select | esc cancel',
+      promptLabel: 'Editor',
+      placeholder: 'Choose how to open this path',
+    });
   };
 
   return new Promise((resolve) => {
@@ -187,47 +223,66 @@ export const nav = async (dir, tui) => {
   const items = await fs.readdir(dir, { withFileTypes: true });
   const newItems = items
     .filter(i => !i.name.startsWith('.'))
-    .map(i => (i.isDirectory() ? `${DIR_SYMBOL} ${i.name}` : `${FILE_SYMBOL} ${i.name}`))
-    .sort(a => (a.startsWith(DIR_SYMBOL) ? -1 : 1));
+    .map(i => ({
+      kind: i.isDirectory() ? 'directory' : 'file',
+      name: i.name,
+      label: i.isDirectory() ? `${DIRECTORY_PREFIX}${i.name}` : i.name,
+      path: path.join(dir, i.name),
+    }))
+    .sort((a, b) => {
+      const aIsDir = a.kind === 'directory';
+      const bIsDir = b.kind === 'directory';
 
-  const selected = await renderTUI(dir, newItems, tui);
+      if (aIsDir !== bIsDir) {
+        return aIsDir ? -1 : 1;
+      }
 
-  if (selected === LEFT) {
+      return a.name.localeCompare(b.name);
+    });
+
+  const result = await renderTUI(dir, newItems, tui);
+
+  if (result.action === ACTION_GO_PARENT) {
     return nav(path.dirname(dir), tui);
   }
 
-  if (selected === VSCODE_OPEN) {
-    handleVSCodeOpen(dir);
+  if (result.action === ACTION_COPY_HERE) {
+    return copyCurrentDirectory(dir, tui);
+  }
+
+  if (result.action === ACTION_OPEN_CWD) {
+    await selectEditor(false, dir, tui);
     return nav(dir, tui);
   }
 
-  await handleAnswer({ navTo: selected }, dir, tui);
+  if (result.action === ACTION_SELECT && result.item) {
+    if (result.item.kind === 'directory') {
+      return nav(result.item.path, tui);
+    }
+
+    await selectEditor(true, result.item.path, tui);
+    return nav(dir, tui);
+  }
 };
 
 export const selectEditor = async (isFile, filePath, tui) => {
-  const navEditor = process.env.NAV_EDITOR;
-  if (navEditor) {
-    handleCustomEditorOpen(filePath, navEditor);
-    return;
+  const availableEditors = await getAvailableEditors(isFile);
+  if (availableEditors.length === 0) {
+    tui.exit();
+    console.error('No supported editors were found on your PATH.');
+    process.exit(1);
   }
 
-  const VS_CODE_ANSWER = '🆚 VS Code';
-  const INTELI_J_ANSWER = '☕ InteliJ';
-  const NOTEPAD_ANSWER = '🗒️ Notepad';
-
-  const choices = [VS_CODE_ANSWER, INTELI_J_ANSWER];
-  if (isFile) {
-    choices.push(NOTEPAD_ANSWER);
-  }
-
+  const choices = availableEditors.map((editor) => editor.label);
   const answer = await renderListPrompt('Select your editor:', choices, tui);
   if (!answer) return;
 
-  if (answer === VS_CODE_ANSWER) {
-    handleVSCodeOpen(filePath);
-  } else if (answer === INTELI_J_ANSWER) {
-    handleInteliJOpen(filePath);
-  } else if (answer === NOTEPAD_ANSWER) {
-    handleNotepadOpen(filePath);
+  const selectedEditor = availableEditors.find((editor) => editor.label === answer);
+  if (!selectedEditor) return;
+
+  const didOpen = await openEditor(selectedEditor, filePath);
+  if (didOpen) {
+    tui.exit();
+    process.exit(0);
   }
 };
