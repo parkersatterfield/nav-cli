@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import readline from 'readline';
-import { copyCurrentDirectory, handleInteliJOpen, handleNotepadOpen, handleVSCodeOpen } from './utils.js';
+import { copyCurrentDirectory, getAvailableEditors, openEditor } from './utils.js';
 import { DIRECTORY_PREFIX } from './constants.js';
 
 const ACTION_GO_PARENT = 'go-parent';
@@ -254,23 +254,24 @@ export const nav = async (dir, tui) => {
 };
 
 export const selectEditor = async (isFile, filePath, tui) => {
-  const VS_CODE_ANSWER = 'VS Code';
-  const INTELI_J_ANSWER = 'IntelliJ';
-  const NOTEPAD_ANSWER = 'Notepad';
-
-  const choices = [VS_CODE_ANSWER, INTELI_J_ANSWER];
-  if (isFile) {
-    choices.push(NOTEPAD_ANSWER);
+  const availableEditors = await getAvailableEditors(isFile);
+  if (availableEditors.length === 0) {
+    tui.exit();
+    console.error('No supported editors were found on your PATH.');
+    process.exit(1);
   }
 
+  const choices = availableEditors.map((editor) => editor.label);
   const answer = await renderListPrompt('Select your editor:', choices, tui);
   if (!answer) return;
 
-  if (answer === VS_CODE_ANSWER) {
-    handleVSCodeOpen(filePath);
-  } else if (answer === INTELI_J_ANSWER) {
-    handleInteliJOpen(filePath);
-  } else if (answer === NOTEPAD_ANSWER) {
-    handleNotepadOpen(filePath);
+  const selectedEditor = availableEditors.find((editor) => editor.label === answer);
+  if (!selectedEditor) return;
+
+  const didOpen = await openEditor(selectedEditor, filePath);
+  if (didOpen) {
+    tui.exit();
+    console.log(`Opened in ${selectedEditor.label}.`);
+    process.exit(0);
   }
 };
