@@ -5,9 +5,64 @@ const ANSI = {
   bold: '\x1b[1m',
   dim: '\x1b[2m',
   inverse: '\x1b[7m',
+  cyan: '\x1b[36m',
 };
 
-const DEFAULT_SHORTCUTS = '↑↓ move | type filter | esc quit';
+const DEFAULT_SHORTCUTS = 'up/down move | enter open | tab actions | ^o open | ^y copy | esc quit';
+
+export const HEADER_HEIGHT = 2;
+export const FOOTER_HEIGHT = 2;
+export const LIST_START_ROW = HEADER_HEIGHT + 1;
+
+const buildCountLabel = ({ totalCount = null, filteredCount, filterText = '' } = {}) => {
+  if (totalCount === null) return '';
+
+  if (filterText) {
+    return `${filteredCount}/${totalCount} shown`;
+  }
+
+  return `${totalCount} item${totalCount === 1 ? '' : 's'}`;
+};
+
+export const getMaxVisibleRows = (rows) => Math.max(1, rows - HEADER_HEIGHT - FOOTER_HEIGHT);
+
+export const buildHeaderModel = (text, meta = {}, cols = 80) => {
+  const {
+    totalCount = null,
+    filteredCount = totalCount ?? 0,
+    filterText = '',
+    headerHint = '',
+  } = meta;
+
+  const countLabel = buildCountLabel({ totalCount, filteredCount, filterText });
+  const statusLabel = headerHint || '';
+  const statusText = statusLabel ? `nav ${statusLabel}` : 'nav';
+  const statusWidth = countLabel
+    ? Math.max(0, cols - countLabel.length - 3)
+    : cols;
+  const statusLine = statusWidth > 0
+    ? statusText.length <= statusWidth
+      ? statusText
+      : `${statusText.slice(0, Math.max(0, statusWidth - 3))}...`
+    : '';
+
+  const pathPrefix = '  └── ';
+  const pathWidth = Math.max(0, cols - pathPrefix.length);
+  const pathLine = `${pathPrefix}${pathWidth > 0
+    ? text.length <= pathWidth
+      ? text
+      : pathWidth <= 3
+        ? '.'.repeat(pathWidth)
+        : `...${text.slice(-(pathWidth - 3))}`
+    : ''}`;
+
+  return {
+    countLabel,
+    pathLine,
+    statusLabel,
+    statusLine,
+  };
+};
 
 export class TUI {
   constructor() {
@@ -81,36 +136,26 @@ export class TUI {
     if (!item?.kind) return '';
 
     const enterAction = item.kind === 'directory' ? 'enter browse' : 'enter open';
-    return `${enterAction} | ← back /`;
+    return `${enterAction} | tab menu`;
   }
 
   renderHeader(text, meta = {}) {
     const {
-      totalCount = null,
-      filteredCount = totalCount ?? 0,
-      filterText = '',
-      headerHint = '',
-    } = meta;
+      countLabel,
+      pathLine,
+      statusLabel,
+      statusLine,
+    } = buildHeaderModel(text, meta, this.cols);
 
     this.moveTo(1, 1);
     process.stdout.write('\x1b[2K');
+    process.stdout.write(`${ANSI.inverse}${ANSI.bold} nav ${ANSI.reset}`);
 
-    const countLabel = totalCount === null
-      ? ''
-      : filterText
-        ? `${filteredCount}/${totalCount} shown`
-        : `${totalCount} item${totalCount === 1 ? '' : 's'}`;
-    const prefix = `${ANSI.inverse}${ANSI.bold} nav ${ANSI.reset} `;
-    const hintText = headerHint ? ` | ${headerHint}` : '';
-    const availablePathWidth = Math.max(
-      0,
-      this.cols - countLabel.length - hintText.length - (countLabel ? 8 : 6),
-    );
-    const truncated = this.truncateFromStart(text, availablePathWidth);
-    process.stdout.write(`${prefix}${ANSI.bold}${truncated}${ANSI.reset}`);
-
-    if (hintText) {
-      process.stdout.write(`${ANSI.dim}${hintText}${ANSI.reset}`);
+    const statusContent = statusLine.startsWith('nav ')
+      ? statusLine.slice('nav '.length)
+      : statusLabel;
+    if (statusContent) {
+      process.stdout.write(` ${ANSI.dim}${statusContent}${ANSI.reset}`);
     }
 
     if (countLabel) {
@@ -118,10 +163,14 @@ export class TUI {
       this.moveTo(1, countColumn);
       process.stdout.write(`${ANSI.dim}${countLabel}${ANSI.reset}`);
     }
+
+    this.moveTo(2, 1);
+    process.stdout.write('\x1b[2K');
+    process.stdout.write(`${ANSI.cyan}${ANSI.bold}${pathLine.slice(0, 6)}${ANSI.reset}${ANSI.cyan}${ANSI.bold}${pathLine.slice(6)}${ANSI.reset}`);
   }
 
   renderList(items, selectedIdx) {
-    const maxVisible = Math.max(1, this.rows - 3);
+    const maxVisible = getMaxVisibleRows(this.rows);
 
     if (selectedIdx < this.scrollOffset) {
       this.scrollOffset = selectedIdx;
@@ -132,7 +181,7 @@ export class TUI {
     const visible = items.slice(this.scrollOffset, this.scrollOffset + maxVisible);
 
     for (let i = 0; i < maxVisible; i++) {
-      const row = 2 + i;
+      const row = LIST_START_ROW + i;
       this.moveTo(row, 1);
       process.stdout.write('\x1b[2K');
       const item = visible[i];
@@ -146,21 +195,22 @@ export class TUI {
       const absoluteIdx = this.scrollOffset + i;
       const isSelected = absoluteIdx === selectedIdx;
       const label = this.getItemLabel(item);
-      const prefix = isSelected ? '› ' : '  ';
+      const prefix = isSelected
+        ? `${ANSI.cyan}${ANSI.bold}›${ANSI.reset} `
+        : '  ';
       const hint = isSelected ? this.getActiveHint(item) : '';
       const hintStart = hint ? this.cols - hint.length + 1 : 0;
-      const maxLabelWidth = hint && hintStart > prefix.length + 4
-        ? hintStart - prefix.length - 3
-        : this.cols - prefix.length;
+      const maxLabelWidth = hint && hintStart > 6
+        ? hintStart - 4
+        : this.cols - 2;
       const truncated = this.truncateFromEnd(label, Math.max(0, maxLabelWidth));
       process.stdout.write(`${prefix}${this.styleItem(item, truncated, isSelected)}`);
 
-      if (hint && hintStart > prefix.length + truncated.length + 2) {
+      if (hint && hintStart > truncated.length + 5) {
         this.moveTo(row, hintStart);
         process.stdout.write(`${ANSI.dim}${hint}${ANSI.reset}`);
       }
     }
-
   }
 
   renderFooter({
@@ -180,6 +230,6 @@ export class TUI {
 
     this.moveTo(inputRow, 1);
     process.stdout.write('\x1b[2K');
-    process.stdout.write(`${ANSI.bold}${promptLabel}${ANSI.reset} ${filterValue}`);
+    process.stdout.write(`${ANSI.cyan}${ANSI.bold}${promptLabel}${ANSI.reset} ${filterValue}`);
   }
 }

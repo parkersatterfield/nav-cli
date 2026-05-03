@@ -35,17 +35,28 @@ After installing globally via npm, run:
 nav
 ```
 
+You can also jump into saved entry modes:
+
+```bash
+nav h
+nav f
+```
+
 From there you can:
 
-- **Open Current Directory**: Press `Ctrl + O` to open the current folder in your editor of choice.
+- **Open Highlighted Target**: Press `Ctrl + O` to open the selected directory or file in your editor of choice.
 - **Stay Here**: Copy a ready-to-run `cd` command for the current directory with `Ctrl + Y`.
+- **Manage The Highlighted Target**: Press `Tab` to act on the selected item, including opening it or saving directories as home/favorites.
 - **Back Directory**: Use the left arrow to move to the previous directory.
 - **Directory Navigation**: Press `Enter` on a directory to browse into it.
 - **File Opening**: Press `Enter` on a file and choose which editor to open it with.
 - **Search**: Type at any time to filter the current folder.
 
+If you run `nav h` without a saved home directory or `nav f` without saved favorites, nav falls back to your current directory and shows setup guidance in the interface.
+
 ### Hotkeys
-- **Ctrl + o**: Open the current directory in a supported editor.
+- **Tab**: Open actions for the highlighted target.
+- **Ctrl + o**: Open the highlighted target in a supported editor.
 - **Ctrl + y**: Stay here and copy a `cd` command for the current directory.
 - **Left Arrow**: Go back to the previous directory.
 - **Enter**: Browse into a directory or open a file with an editor picker.

@@ -25,9 +25,14 @@ export const copyCurrentDirectory = (currentDir, tui) => {
 };
 
 const EDITORS = [
-  { label: 'VS Code', command: 'code', fileOnly: false },
+  { label: 'VS Code', command: 'code', fileOnly: false, args: ['-n'] },
   { label: 'IntelliJ', command: 'idea', fileOnly: false },
   { label: 'Notepad', command: 'notepad', fileOnly: true },
+];
+
+export const getEditorLaunchArgs = (editor, filePath) => [
+  ...(editor.args ?? []),
+  filePath,
 ];
 
 export const getAvailableEditors = async (isFile) => {
@@ -51,14 +56,15 @@ export const openEditor = async (editor, filePath) => {
   try {
     const isWindowsShim =
       process.platform === 'win32' && /\.(cmd|bat)$/i.test(editor.resolvedCommand);
+    const launchArgs = getEditorLaunchArgs(editor, filePath);
 
     const child = isWindowsShim
-      ? spawn(process.env.ComSpec || 'cmd.exe', ['/c', editor.resolvedCommand, filePath], {
+      ? spawn(process.env.ComSpec || 'cmd.exe', ['/c', editor.resolvedCommand, ...launchArgs], {
           detached: true,
           stdio: 'ignore',
           windowsHide: true,
         })
-      : spawn(editor.resolvedCommand, [filePath], {
+      : spawn(editor.resolvedCommand, launchArgs, {
           detached: true,
           stdio: 'ignore',
           windowsHide: true,
