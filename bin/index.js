@@ -1,15 +1,20 @@
 #!/usr/bin/env node
 
+import { getUsageText, parseArgs } from './cli.js';
 import { nav } from './navigation.js';
 import { TUI } from './tui.js';
 
 const args = process.argv.slice(2);
+const parsedArgs = parseArgs(args);
 
-if (args.includes('--help') || args.includes('-h')) {
-  console.log(
-    'Usage: nav\n\nNavigate your filesystem interactively.'
-  );
+if (parsedArgs.kind === 'help') {
+  console.log(getUsageText());
   process.exit(0);
+}
+
+if (parsedArgs.kind === 'invalid') {
+  console.error(getUsageText());
+  process.exit(1);
 }
 
 if (!process.stdout.isTTY) {
@@ -29,5 +34,9 @@ process.on('exit', cleanup);
 process.on('uncaughtException', (err) => { cleanup(); console.error(err); process.exit(1); });
 
 tui.enter();
-await nav(process.cwd(), tui);
+await nav({
+  cwd: process.cwd(),
+  mode: parsedArgs.mode,
+  tui,
+});
 cleanup();
