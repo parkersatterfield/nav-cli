@@ -12,6 +12,7 @@ import {
 } from './config.js';
 import { copyCurrentDirectory, getAvailableEditors, openEditor } from './utils.js';
 import { DIRECTORY_PREFIX } from './constants.js';
+import { sanitizeForTerminal } from './tui.js';
 
 const ACTION_GO_PARENT = 'go-parent';
 const ACTION_COPY_HERE = 'copy-here';
@@ -33,7 +34,7 @@ const buildDirectoryItems = async (dirPath, fsImpl = fs) => {
     .map((item) => ({
       kind: item.isDirectory() ? 'directory' : 'file',
       name: item.name,
-      label: item.isDirectory() ? `${DIRECTORY_PREFIX}${item.name}` : item.name,
+      label: sanitizeForTerminal(item.isDirectory() ? `${DIRECTORY_PREFIX}${item.name}` : item.name),
       path: path.join(dirPath, item.name),
     }))
     .sort((a, b) => {
@@ -106,7 +107,7 @@ const getBrowserHelpText = ({ activeItem, notice }) => {
 };
 
 const buildFavoriteChoices = (favorites) => favorites.map((favoritePath) => ({
-  label: favoritePath,
+  label: sanitizeForTerminal(favoritePath),
   value: favoritePath,
 }));
 
@@ -114,14 +115,14 @@ export const resolveContextTarget = (dirPath, activeItem) => {
   if (activeItem) {
     return {
       kind: activeItem.kind,
-      label: activeItem.label,
+      label: sanitizeForTerminal(activeItem.label),
       path: activeItem.path,
     };
   }
 
   return {
     kind: 'directory',
-    label: dirPath,
+    label: sanitizeForTerminal(dirPath),
     path: dirPath,
   };
 };
@@ -495,7 +496,7 @@ const applyDirectoryAction = async (action, target, tui) => {
 const openActionsMenu = async (target, tui) => {
   const config = await loadConfig();
   const selected = await renderPicker({
-    message: `Actions for ${target.path}`,
+    message: `Actions for ${sanitizeForTerminal(target.path)}`,
     choices: buildActionChoices(target, config),
     tui,
     promptLabel: 'Action',

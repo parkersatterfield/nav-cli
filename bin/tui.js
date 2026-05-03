@@ -9,6 +9,7 @@ const ANSI = {
 };
 
 const DEFAULT_SHORTCUTS = 'up/down move | enter open | tab actions | ^o open | ^y copy | esc quit';
+const TERMINAL_CONTROL_CHARS = /[\u0000-\u001F\u007F-\u009F]/g;
 
 export const HEADER_HEIGHT = 2;
 export const FOOTER_HEIGHT = 2;
@@ -26,6 +27,8 @@ const buildCountLabel = ({ totalCount = null, filteredCount, filterText = '' } =
 
 export const getMaxVisibleRows = (rows) => Math.max(1, rows - HEADER_HEIGHT - FOOTER_HEIGHT);
 
+export const sanitizeForTerminal = (text) => String(text ?? '').replace(TERMINAL_CONTROL_CHARS, '');
+
 export const buildHeaderModel = (text, meta = {}, cols = 80) => {
   const {
     totalCount = null,
@@ -34,8 +37,8 @@ export const buildHeaderModel = (text, meta = {}, cols = 80) => {
     headerHint = '',
   } = meta;
 
-  const countLabel = buildCountLabel({ totalCount, filteredCount, filterText });
-  const statusLabel = headerHint || '';
+  const countLabel = sanitizeForTerminal(buildCountLabel({ totalCount, filteredCount, filterText }));
+  const statusLabel = sanitizeForTerminal(headerHint || '');
   const statusText = statusLabel ? `nav ${statusLabel}` : 'nav';
   const statusWidth = countLabel
     ? Math.max(0, cols - countLabel.length - 3)
@@ -48,12 +51,13 @@ export const buildHeaderModel = (text, meta = {}, cols = 80) => {
 
   const pathPrefix = '  └── ';
   const pathWidth = Math.max(0, cols - pathPrefix.length);
+  const safeText = sanitizeForTerminal(text);
   const pathLine = `${pathPrefix}${pathWidth > 0
-    ? text.length <= pathWidth
-      ? text
+    ? safeText.length <= pathWidth
+      ? safeText
       : pathWidth <= 3
         ? '.'.repeat(pathWidth)
-        : `...${text.slice(-(pathWidth - 3))}`
+        : `...${safeText.slice(-(pathWidth - 3))}`
     : ''}`;
 
   return {
@@ -128,8 +132,8 @@ export class TUI {
   }
 
   getItemLabel(item) {
-    if (typeof item === 'string') return item;
-    return item?.label ?? '';
+    if (typeof item === 'string') return sanitizeForTerminal(item);
+    return sanitizeForTerminal(item?.label ?? '');
   }
 
   getActiveHint(item) {
@@ -221,8 +225,12 @@ export class TUI {
   }) {
     const helpRow = this.rows - 1;
     const inputRow = this.rows;
-    const helpLine = this.truncateFromEnd(helpText, this.cols);
-    const filterValue = filterText || `${ANSI.dim}${placeholder}${ANSI.reset}`;
+    const safeHelpText = sanitizeForTerminal(helpText);
+    const safeFilterText = sanitizeForTerminal(filterText);
+    const safePromptLabel = sanitizeForTerminal(promptLabel);
+    const safePlaceholder = sanitizeForTerminal(placeholder);
+    const helpLine = this.truncateFromEnd(safeHelpText, this.cols);
+    const filterValue = safeFilterText || `${ANSI.dim}${safePlaceholder}${ANSI.reset}`;
 
     this.moveTo(helpRow, 1);
     process.stdout.write('\x1b[2K');
@@ -230,6 +238,6 @@ export class TUI {
 
     this.moveTo(inputRow, 1);
     process.stdout.write('\x1b[2K');
-    process.stdout.write(`${ANSI.cyan}${ANSI.bold}${promptLabel}${ANSI.reset} ${filterValue}`);
+    process.stdout.write(`${ANSI.cyan}${ANSI.bold}${safePromptLabel}${ANSI.reset} ${filterValue}`);
   }
 }
