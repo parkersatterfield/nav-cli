@@ -2,6 +2,8 @@ import { spawn } from 'child_process';
 import clipboard from 'clipboardy';
 import which from 'which';
 
+const WINDOWS_SHELL_METACHAR_PATTERN = /[%!^&()<>|]/;
+
 const formatCdCommand = (currentDir) => {
   if (process.platform === 'win32') {
     return `cd "${currentDir.replace(/"/g, '""')}"`;
@@ -57,18 +59,23 @@ export const openEditor = async (editor, filePath) => {
     const isWindowsShim =
       process.platform === 'win32' && /\.(cmd|bat)$/i.test(editor.resolvedCommand);
     const launchArgs = getEditorLaunchArgs(editor, filePath);
+    const spawnOptions = {
+      detached: true,
+      stdio: 'ignore',
+      ...(isWindowsShim ? { windowsHide: true } : {}),
+    };
+
+    if (isWindowsShim && WINDOWS_SHELL_METACHAR_PATTERN.test(editor.resolvedCommand)) {
+      console.error(
+        `Refusing to launch ${editor.label} from an unsafe Windows PATH entry. ` +
+        'Move the editor to a path without shell metacharacters or use a non-batch launcher.',
+      );
+      return false;
+    }
 
     const child = isWindowsShim
-      ? spawn(process.env.ComSpec || 'cmd.exe', ['/c', editor.resolvedCommand, ...launchArgs], {
-          detached: true,
-          stdio: 'ignore',
-          windowsHide: true,
-        })
-      : spawn(editor.resolvedCommand, launchArgs, {
-          detached: true,
-          stdio: 'ignore',
-          windowsHide: true,
-        });
+      ? spawn(process.env.ComSpec || 'cmd.exe', ['/d', '/c', editor.resolvedCommand, ...launchArgs], spawnOptions)
+      : spawn(editor.resolvedCommand, launchArgs, spawnOptions);
 
     return await new Promise((resolve) => {
       child.once('error', (error) => {

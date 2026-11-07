@@ -30,6 +30,21 @@ test('resolveContextTarget falls back to the current directory when nothing is s
   });
 });
 
+test('resolveContextTarget sanitizes highlighted labels before rendering', () => {
+  assert.deepEqual(
+    resolveContextTarget('/workspace', {
+      kind: 'file',
+      label: 'notes\u001b[31m.txt',
+      path: '/workspace/notes.txt',
+    }),
+    {
+      kind: 'file',
+      label: 'notes[31m.txt',
+      path: '/workspace/notes.txt',
+    },
+  );
+});
+
 test('buildActionChoices includes directory actions for directory targets', () => {
   const choices = buildActionChoices({
     kind: 'directory',
@@ -174,7 +189,7 @@ test('resolveNavigationState returns favorite choices when valid favorites exist
     mode: 'favorites',
     config: {
       homeDir: null,
-      favorites: ['/favorite-one', '/favorite-two', '/invalid'],
+      favorites: ['/favorite-one', '/favorite-\u001b[31mtwo', '/invalid'],
     },
     isDirectory: async (dirPath) => dirPath !== '/invalid',
   });
@@ -184,7 +199,7 @@ test('resolveNavigationState returns favorite choices when valid favorites exist
     notice: '',
     favoriteChoices: [
       { label: '/favorite-one', value: '/favorite-one' },
-      { label: '/favorite-two', value: '/favorite-two' },
+      { label: '/favorite-[31mtwo', value: '/favorite-\u001b[31mtwo' },
     ],
   });
 });
